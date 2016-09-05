@@ -15,9 +15,12 @@ class Level extends TmxEntity
       loadGraphic("graphics/tiles.png", ["walls"]);
       loadMask("walls", "walls");
       map = TmxMap.loadFromFile(filename);
-      /*for(entity in map.getObjectGroup("entities").objects)
+      for(entity in map.getObjectGroup("entities").objects)
       {
-
-      }*/
+          if(entity.type == "player") {
+            entities.push(new Player(entity.x, entity.y));
+          }
+      }
   }
+
 }

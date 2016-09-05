@@ -14,8 +14,11 @@ class MainScene extends Scene
 
 	public override function begin()
 	{
-			add(new Level("levels/level1.tmx"));
-			add(new Player(Math.floor(HXP.screen.width / 2), Math.floor(HXP.screen.height / 2)));
+			var level:Level = new Level("levels/level1.tmx");
+			add(level);
+			for (entity in level.entities) {
+				add(entity);
+			}
 	}
 
 	public override function update()
