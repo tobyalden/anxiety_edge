@@ -20,6 +20,9 @@ class Level extends TmxEntity
           if(entity.type == "player") {
             entities.push(new Player(entity.x, entity.y));
           }
+          if(entity.type == "spike") {
+            entities.push(new Spike(entity.x, entity.y));
+          }
       }
   }
 

@@ -30,16 +30,24 @@ class Player extends ActiveEntity
   private var fuelBar:Image;
   private var allGraphics:Graphiclist;
 
+  private var startX:Int;
+  private var startY:Int;
+
+  private var isDead:Bool;
+
   public function new(x:Int, y:Int)
   {
     super(x, y);
+    startX = x;
+    startY = y;
     allGraphics = new Graphiclist(new Array<Graphic>());
-    sprite = new Spritemap("graphics/player.png", 30, 30);
+    sprite = new Spritemap("graphics/player.png", 30, 40);
     sprite.add("idle", [0]);
     sprite.add("run", [1, 2, 3, 4], 12);
     sprite.add("jump", [5]);
     sprite.add("boost", [6]);
     sprite.add("skid", [7]);
+    sprite.add("die", [8, 9, 10, 11, 12, 13], 21, false);
 
     fuelBar = new Image("graphics/fuelbar.png");
     fuelBar.alpha = 0.5;
@@ -50,11 +58,17 @@ class Player extends ActiveEntity
     setHitbox(16, 16, -7, -14);
     fuel = MAX_JETPACK_FUEL;
     canBoost = false;
+    isDead = false;
   }
 
   public override function update()
   {
       super.update();
+
+      if(isDead)
+      {
+        return;
+      }
 
       if(isOnWall())
       {
@@ -147,6 +161,18 @@ class Player extends ActiveEntity
 
       fuelBar.scaleX = fuel / MAX_JETPACK_FUEL;
       fuelBar.visible = fuel < MAX_JETPACK_FUEL;
+
+      if(collide("hazard", x, y) != null)
+      {
+        die();
+      }
+  }
+
+  private function die()
+  {
+    sprite.play("die");
+    isDead = true;
+    fuelBar.visible = false;
   }
 
 }
