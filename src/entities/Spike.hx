@@ -9,9 +9,11 @@ class Spike extends ActiveEntity
 
   private var needsSprite:Bool;
 
-  public function new(x:Int, y:Int)
+  // TODO: Give a pixel-perfect (or at least triangular) mask to spikes (Use the Polygon class)
+
+  public function new(x:Float, y:Float)
   {
-    super(x, y-32);
+    super(x, y);
     sprite = new Spritemap("graphics/spikes.png", 32, 32);
     sprite.add("up", [0]);
     sprite.add("right", [1]);

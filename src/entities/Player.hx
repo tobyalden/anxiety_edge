@@ -30,14 +30,14 @@ class Player extends ActiveEntity
   private var fuelBar:Image;
   private var allGraphics:Graphiclist;
 
-  private var startX:Int;
-  private var startY:Int;
+  private var startX:Float;
+  private var startY:Float;
 
   private var isDead:Bool;
 
-  public function new(x:Int, y:Int)
+  public function new(x:Float, y:Float)
   {
-    super(x, y);
+    super(x, y-32);
     startX = x;
     startY = y;
     allGraphics = new Graphiclist(new Array<Graphic>());
@@ -64,6 +64,12 @@ class Player extends ActiveEntity
   public override function update()
   {
       super.update();
+
+      if(Input.check(Key.R)) {
+        isDead = false;
+        x = startX;
+        y = startY;
+      }
 
       if(isDead)
       {

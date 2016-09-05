@@ -17,11 +17,20 @@ class Level extends TmxEntity
       map = TmxMap.loadFromFile(filename);
       for(entity in map.getObjectGroup("entities").objects)
       {
-          if(entity.type == "player") {
-            entities.push(new Player(entity.x, entity.y));
+          if(entity.gid == 3) {
+            entities.push(new Player(entity.x, entity.y-32));
           }
-          if(entity.type == "spike") {
-            entities.push(new Spike(entity.x, entity.y));
+          else if(entity.gid == 4) {
+            entities.push(new Cannon(entity.x, entity.y-32, "horizontal"));
+          }
+          else if(entity.gid == 5) {
+            entities.push(new Cannon(entity.x, entity.y-32, "vertical"));
+          }
+          else if(entity.gid == 6) {
+            entities.push(new Sawblade(entity.x, entity.y-32));
+          }
+          else if(entity.gid >= 7 && entity.gid <= 10) {
+            entities.push(new Spike(entity.x, entity.y-32));
           }
       }
   }
