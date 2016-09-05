@@ -18,7 +18,6 @@ class Sawblade extends ActiveEntity
   {
     super(x, y);
     reversed = false;
-    orientation = "floor";
     needsOrientation = true;
     sprite = new Spritemap("graphics/sawblade.png", 32, 32);
     sprite.add("spin", [1, 2]);
@@ -32,21 +31,7 @@ class Sawblade extends ActiveEntity
   public override function update()
   {
     if(needsOrientation) {
-      if(
-        scene.collidePoint("walls", x, y + height) != null ||
-        scene.collidePoint("walls", x + width, y + height) != null
-      ) {
-        orientation = "floor";
-        setHitbox(32, 16);
-      }
-      else if(
-        scene.collidePoint("walls", x, y) != null ||
-        scene.collidePoint("walls", x + width, y) != null
-      ) {
-        orientation = "ceiling";
-        setHitbox(32, 16, 0, -16);
-      }
-      needsOrientation = false;
+      assignOrientation();
     }
     if(shouldReverse()) {
       reversed = !reversed;
@@ -59,8 +44,45 @@ class Sawblade extends ActiveEntity
     if(orientation == "floor" || orientation == "ceiling") {
       velocity.x = speed;
     }
+    else if(orientation == "left" || orientation == "right") {
+      velocity.y = speed;
+    }
 
     moveBy(velocity.x, velocity.y);
+  }
+
+  private function assignOrientation()
+  {
+    if(
+      scene.collidePoint("walls", x, y + height - 1) != null &&
+      scene.collidePoint("walls", x + width, y + height - 1) != null
+    ) {
+      orientation = "floor";
+      setHitbox(32, 16);
+    }
+    else if(
+      scene.collidePoint("walls", x, y + 1) != null &&
+      scene.collidePoint("walls", x + width, y + 1) != null
+    ) {
+      orientation = "ceiling";
+      setHitbox(32, 16, 0, -16);
+    }
+    else if(
+      scene.collidePoint("walls", x + width - 1, y) != null &&
+      scene.collidePoint("walls", x + width - 1, y + height) != null
+    ) {
+      trace("added right blade");
+      orientation = "right";
+      setHitbox(16, 32);
+    }
+    else if(
+      scene.collidePoint("walls", x, y) != null &&
+      scene.collidePoint("walls", x, y + height) != null
+    ) {
+      orientation = "left";
+      setHitbox(16, 32, -16, 0);
+    }
+    needsOrientation = false;
   }
 
   private function shouldReverse()
@@ -70,9 +92,18 @@ class Sawblade extends ActiveEntity
       if(orientation == "floor") {
         mountPointA = new Point(x, y + height + 1);
         mountPointB = new Point(x + width, y + height + 1);
-      } else { // ceiling
-        mountPointA = new Point(x, y + halfHeight - 1);
-        mountPointB = new Point(x + width, y + halfHeight + - 1);
+      }
+      else if(orientation == "ceiling") {
+        mountPointA = new Point(x, y + height - 1);
+        mountPointB = new Point(x + width, y + height - 1);
+      }
+      else if(orientation == "right") {
+        mountPointA = new Point(x + width + 1, y);
+        mountPointB = new Point(x + width + 1, y + height);
+      }
+      else { // left
+        mountPointA = new Point(x + width - 1, y);
+        mountPointB = new Point(x + width - 1, y + height);
       }
 
       return collide("walls", x + velocity.x, y + velocity.y) != null ||
